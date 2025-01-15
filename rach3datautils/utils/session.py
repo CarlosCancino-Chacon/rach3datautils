@@ -165,6 +165,7 @@ class SessionFile:
     @splits_list.setter
     def splits_list(self, value: List[Optional[PathLike]]) -> None:
         if not value:
+            self._splits_list = []
             return
         paths = [Path(i) for i in value]
         self._list_id_check(values=paths)
