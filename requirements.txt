@@ -1,5 +1,5 @@
 numpy==1.26.3
-scipy==1.11.4
+scipy==1.13.1
 git+https://github.com/CPJKU/madmom@main#egg=madmom
 partitura==1.4.1
 tqdm==4.66.1

@@ -22,7 +22,7 @@ REQUIRED = [
     "ffmpeg-python~=0.2.0",
     "numpy~=1.26.2",
     "madmom",
-    "scipy~=1.11.3",
+    "scipy~=1.13.1",
     "tqdm~=4.66.1",
     "fastdtw~=0.3.4"
 ]
