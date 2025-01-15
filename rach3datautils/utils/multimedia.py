@@ -114,28 +114,35 @@ class MultimediaTools:
 
         streams = [str(i) for i in files if i.suffix in [".mp4", ".aac"]]
 
-        tmp = tempfile.NamedTemporaryFile(mode="w",
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False,
                                           prefix="concat_file",
-                                          suffix=".txt")
+                                          suffix=".txt") as tmp:
 
-        with open(tmp.name, "w") as f:
-            [f.write(f"file '{stream}'\n") for stream in streams]
+            for stream in streams:
+                tmp.write(f"file '{stream}'\n")
 
-        # This is a bit of a hack, there's probably a better way to do it.
-        concatenated = ffmpeg.input(Path(f.name), f='concat', safe=0)
-        if reencode:
-            out = ffmpeg.output(concatenated,
-                                filename=output,
-                                loglevel=FFMPEG_LOGLEVEL)
-        else:
-            out = ffmpeg.output(concatenated,
-                                filename=output,
-                                c="copy",
-                                loglevel=FFMPEG_LOGLEVEL)
-        out = ffmpeg.overwrite_output(out)
-        out.run()
+            tmp.seek(0)
+            tmp.read()
 
-        tmp.close()
+            # This is a bit of a hack, there's probably a better way to do it.
+            concatenated = ffmpeg.input(Path(tmp.name), f='concat', safe=0)
+            if reencode:
+                out = ffmpeg.output(concatenated,
+                                    filename=output,
+                                    loglevel=FFMPEG_LOGLEVEL)
+            else:
+                out = ffmpeg.output(concatenated,
+                                    filename=output,
+                                    c="copy",
+                                    loglevel=FFMPEG_LOGLEVEL)
+            out = ffmpeg.overwrite_output(out)
+            out.run()
+
+        try:
+            os.unlink(tmp.name)
+        except FileNotFoundError:
+            pass
+
         return output
 
     @staticmethod
