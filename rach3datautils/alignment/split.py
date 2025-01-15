@@ -429,7 +429,7 @@ def split_va_at_timestamps(splits: List[timestamps],
     """
     for split_no, (start, end) in enumerate(splits):
         output_path_video = output_dir.joinpath(
-            "rach3_" + file.stem + f"_split{split_no + 1}" + file.suffix
+            file.stem + f"_split{split_no + 1}" + file.suffix
         )
 
         if output_path_video.exists() and not overwrite:

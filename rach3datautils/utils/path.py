@@ -41,10 +41,6 @@ class PathUtils:
 
         The current way this works is fragile and overly verbose.
         """
-        if self.is_warmup(path):
-            return
-        elif path.stem.split("_")[0] != "rach3":
-            return
 
         if path.suffix == ".mid":
             if self.is_valid_midi(path):
@@ -119,11 +115,28 @@ class PathUtils:
         bool
         """
         return file.stem.split("_")[-1][0] == "p" and file.suffix == ".aac"
+    
+    @staticmethod
+    def get_session_id(file: Path) -> str:
+        """
+        Get the session id (i.e. rach3, warmup, ...)
+        from a given file.
+
+        Parameters
+        ----------
+        file : Path
+
+        Returns
+        -------
+        session_id : str
+        """
+        return file.stem.split("_")[0]
 
     @staticmethod
     def get_session_no(file: Path) -> Union[str, None]:
         """
-        Get the session number from a given file in the format a01, a02, etc.
+        Get the session number from a given file in the correct format -
+        aXX for audio/midi, vXX for video.
 
         Parameters
         ----------

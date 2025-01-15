@@ -8,7 +8,7 @@ from rach3datautils.types import PathLike
 from rach3datautils.utils.multimedia import MultimediaTools
 from rach3datautils.utils.path import PathUtils
 
-full_session_id = Tuple[str, str]  # (date, subsession_no)
+full_session_id = Tuple[str, str, str]  # (id, date, subsession_no)
 # A file can either be composed of many parts, "multi", or just be one part
 # "single"
 session_file_types = Literal["multi", "single"]
@@ -21,6 +21,7 @@ class SessionIdentity:
     """
 
     def __init__(self):
+        self.id: Optional[str] = None
         self.date: Optional[str] = None
         self.subsession_no: Optional[str] = None
         # Full ID is useful when doing ID comparisons to avoid having to
@@ -41,14 +42,15 @@ class SessionIdentity:
 
         Returns
         -------
-        full_session_id : Tuple[str, str]
-            contains (date, subsession_no)
+        full_session_id : Tuple[str, str, str]
+            contains (id, date, subsession_no)
         """
 
+        session_id = PathUtils.get_session_id(file)
         date = PathUtils.get_date(file)
         subsession_no = PathUtils.get_session_no(file)
-
-        return date, subsession_no
+        
+        return session_id, date, subsession_no 
 
     def check_identity(self, file: Path) -> bool:
         """
@@ -98,11 +100,12 @@ class SessionIdentity:
         IdentityError
             if the file cannot be identified
         """
-        date, subsession_no = self.get_file_identity(file)
+        session_id, date, subsession_no = self.get_file_identity(file)
 
+        self.id = session_id
         self.date = date
         self.subsession_no = subsession_no
-        self.full_id = (self.date, self.subsession_no)
+        self.full_id = (self.id, self.date, self.subsession_no)
 
 
 class SessionFile:
